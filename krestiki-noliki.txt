@@ -1,0 +1,71 @@
+# Количество клеток
+board_size = (3)
+
+# Игровое поле
+board = [1, 2, 3,
+         4, 5, 6,
+         7, 8, 9]
+
+# Победные комбинации
+winning_combinations = ((0, 1, 2), (3, 4, 5), (6, 7, 8), # Горизонтальные линии
+                        (0, 3, 6), (1, 4, 7), (2, 5, 8), # Вертикальные линии
+                        (0, 4, 8), (2, 4, 6)             # Диагональные линии
+                        )
+
+# Вывод игрового поля
+def draw_board():
+    print('_' * 4 * board_size)
+    for i in range(board_size):
+        print((' ' * 3 + '|')*3)
+        print('', board[i * 3], '|', board[1 + i * 3], '|', board[2 + i * 3], '|')
+        print(('_' * 3 + '|') * 3)
+
+# Выполнение хода
+def game_step(player, symbol):
+    if (player > 9 or player < 1 or board[player - 1] in ('X', 'O')):
+        return False
+
+    board[player - 1] = symbol
+    return True
+
+# Проверка на победу
+def check_win():
+    win = False
+    for victories in winning_combinations:
+        if (board[victories[0]] == board[victories[1]] and board[victories[1]] == board[victories[2]] and board[victories[1]] in ('X', 'O')):
+            win = board[victories[0]]
+
+    return win
+
+# Начало игры
+def start_game():
+    current_player = 'X' # Текущий игрок
+    step = 1 # Номер хода
+    draw_board()
+
+    while (step < 10) and (check_win() == False):
+        player = int(input(f'Ходит игрок {current_player}. Введите номер клетки от 1 до 9 (0 - выход из игры): '))
+
+        if (player == '0'):
+            break
+
+        if (game_step(int(player), current_player)):
+            print(f'Хороший ход {current_player}!')
+
+            if (current_player == 'X'):
+                current_player = 'O'
+            else:
+                current_player = 'X'
+
+            draw_board()
+            step += 1
+        else:
+            print('Неверно указана цифра, введите другую')
+
+    if (step == 10):
+        print('Ничья!')
+    else:
+        print(f'Победа {check_win()}!')
+
+print('Игра началась!')
+start_game()
